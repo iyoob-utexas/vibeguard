@@ -1,9 +1,3 @@
----
-title: Vibeguard
-document_id: VIBEGUARD-README
-version: 0.2.0
----
-
 # Vibeguard
 
 > **Vibe can start the code. Evidence must finish it.**
