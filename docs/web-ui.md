@@ -1,11 +1,3 @@
----
-title: Web UI Standards
-document_id: VIBEGUARD-WEB-UI
-version: 0.1.0
-status: normative-draft
-last_reviewed: 2026-06-25
----
-
 # Web UI Standards
 
 This document expands on the rules in [`AGENTS.md §5.18`](../AGENTS.md) with rationale and failure patterns. The normative source is `AGENTS.md`; this document is the explanation behind it.

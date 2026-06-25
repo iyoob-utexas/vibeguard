@@ -1,11 +1,3 @@
----
-title: Incident-Derived Engineering Lessons
-document_id: vibeguard-REF-INCIDENTS
-version: 0.1.0
-status: informative
-last_reviewed: 2026-06-25
----
-
 # Incident-Derived Engineering Lessons
 
 Standards often describe what good looks like. Incidents reveal which assumptions were quietly holding the roof up.

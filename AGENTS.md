@@ -1,19 +1,3 @@
----
-title: Canonical AI Coding Agent Instructions
-document_id: VIBEGUARD-AGENT-CONTRACT
-version: 0.2.0
-status: normative-draft
-last_reviewed: 2026-06-25
-applies_to:
-  - code_generation
-  - code_modification
-  - refactoring
-  - testing
-  - configuration
-  - infrastructure
-  - documentation
----
-
 # AGENTS.md — Vibeguard Coding Contract
 
 This file is the canonical, tool-neutral operating contract for any AI system that reads, writes, reviews, tests, configures, deploys, or documents this repository.

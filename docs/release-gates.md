@@ -1,11 +1,3 @@
----
-title: Enterprise Release Gates
-document_id: vibeguard-GATE-001
-version: 0.1.0
-status: normative-draft
-last_reviewed: 2026-06-25
----
-
 # Enterprise Release Gates
 
 Release gates convert controls and evidence into decisions. They are not ceremonial meetings and they are not synonymous with CI stages. A gate can be automated, human, or hybrid, but its decision MUST be attributable and evidence-based.

@@ -1,13 +1,3 @@
----
-title: Holistic Software Failure Taxonomy
-document_id: vibeguard-TAX-001
-version: 0.1.0
-status: normative-draft
-last_reviewed: 2026-06-25
-domain_count: 24
-subcategory_count: 279
----
-
 # Holistic Software Failure Taxonomy
 
 This taxonomy starts with a less glamorous—but more useful—question than “What should good code look like?”:

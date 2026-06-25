@@ -1,11 +1,3 @@
----
-title: Framework Standard
-document_id: vibeguard-STD-001
-version: 0.1.0
-status: normative-draft
-last_reviewed: 2026-06-25
----
-
 # Framework Standard
 
 This document defines how the Vibeguard is interpreted, tailored, measured, governed, and evolved. It is normative for repositories that adopt the framework.

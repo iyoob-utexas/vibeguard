@@ -1,9 +1,3 @@
----
-title: Vibeguard Scorecard
-document_id: VIBEGUARD-SCORECARD
-version: 0.2.0
----
-
 # Vibeguard Scorecard
 
 This is the scorecard template. Your AI tool uses this format to assess your project and produce a completed scorecard — either as output in the conversation or written as `vibeguard-scorecard.md` in your project. You do not fill this in manually, and the AI does not edit this file.
