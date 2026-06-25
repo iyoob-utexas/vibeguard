@@ -30,6 +30,26 @@ This document expands on the rules in [`AGENTS.md §5.18`](../AGENTS.md) with ra
 
 **Allowed:** CSS Modules or `styled-components` for the rare case where a Tailwind class composition becomes unreadable. Not for general use.
 
+### Use a component library for UI primitives
+
+**Rule:** Modals, popovers, dropdowns, comboboxes, date pickers, tooltips, and drag-and-drop MUST come from a maintained accessible component library, not a custom implementation.
+
+**Why:** Building these from scratch is one of the most common AI vibe-coding failure patterns. A hand-rolled modal typically gets z-index wrong, misses the focus trap, fails keyboard navigation, ignores screen readers, and breaks on mobile. A hand-rolled date picker misses locale formatting, keyboard entry, and range selection edge cases. The bugs are invisible until a user hits them. Libraries like Radix UI, Headless UI, and shadcn/ui have already solved these problems, are actively maintained, and are accessibility-compliant by default.
+
+**Preferred:**
+
+| Primitive type | Preferred library |
+|---|---|
+| Unstyled accessible primitives | Radix UI, Headless UI, Ark UI |
+| Pre-styled component system | shadcn/ui (built on Radix), Mantine |
+| Data tables | TanStack Table |
+| Virtual lists | TanStack Virtual, react-window |
+| Date/time | react-day-picker, date-fns |
+| Forms and validation | React Hook Form + Zod |
+| Charts | Recharts, Victory, Nivo |
+
+Custom implementations of any primitive in the table above require a documented justification.
+
 ---
 
 ## 2. Code structure and modularity

@@ -328,6 +328,7 @@ These rules apply to any change that touches a browser-rendered interface. See [
 
 - MUST use a utility-first CSS framework (Tailwind CSS by default); MUST NOT write standalone vanilla CSS classes for layout or component styling.
 - MUST use modern React with functional components and hooks; MUST NOT introduce class-based React components, Redux, Angular, or jQuery in new code.
+- MUST use a maintained accessible component library for UI primitives (modals, dropdowns, date pickers, comboboxes, tooltips, drag-and-drop); MUST NOT implement these from scratch. Preferred: Radix UI, Headless UI, shadcn/ui. Custom implementations require documented justification.
 - MUST organize UI into single-responsibility components; no component file SHOULD exceed 300 lines; logic used in more than one place MUST be extracted into a hook, utility, or service.
 - MUST NOT hardcode dynamic content: labels, messages, error strings, API base URLs, thresholds, and environment-specific values MUST be defined as constants, configuration, or i18n keys.
 - MUST handle all UI states explicitly: loading, empty, error, partial/stale, and success; a component that renders correctly only on an instant happy path is incomplete.

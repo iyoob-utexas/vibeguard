@@ -315,6 +315,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Define expected load shape, partition keys, concurrency model, capacity limits, headroom, backpressure, and degradation before scale is needed.
 - **Expected evidence:** Capacity model; partition analysis; load-shape scenarios.
 
+### ARC-11: Stateless design and horizontal parallelizability
+
+- **What can go wrong:** Handlers hold in-process session state, local file locks, or per-node caches that prevent running multiple instances; scaling requires architectural surgery rather than adding nodes. AI-generated code frequently introduces implicit statefulness (module-level variables, singleton caches, open file handles) that is invisible until a second instance is started.
+- **Enterprise hardening intent:** Services SHOULD be designed stateless by default, with all shared state externalized to a database, cache, or queue. Horizontal scaling SHOULD require no code change, only configuration. Stateful exceptions (websocket servers, scheduled workers, leader-election roles) MUST be explicitly identified and designed for. Operations SHOULD be idempotent so parallel execution and retries produce the same result.
+- **Expected evidence:** Statelessness review; multi-instance smoke test; idempotency test for mutating operations; explicit inventory of stateful exceptions.
+
 ### ARC-09: Evolvability and replaceability
 
 - **What can go wrong:** Interfaces, schemas, vendors, and internal modules cannot change independently; every migration becomes a big-bang event.
@@ -468,6 +474,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **What can go wrong:** Generated patches accumulate special cases, TODOs, suppressions, and dependency drift faster than teams can understand them.
 - **Enterprise hardening intent:** Require debt records with owner and expiry; prohibit unexplained suppressions; budget refactoring; measure change hotspots and escaped defects.
 - **Expected evidence:** Debt register; suppression audit; maintainability trend; refactoring plan.
+
+### COD-11: Prefer maintained libraries over custom implementations
+
+- **What can go wrong:** AI-generated code builds custom implementations of well-solved problems: modal dialogs, date pickers, dropdown menus, form validation, authentication flows, markdown renderers, CSV parsers, encryption wrappers. Custom implementations miss edge cases that battle-tested libraries handle (focus traps, keyboard navigation, locale-aware date parsing, timing-safe comparison), accumulate bugs the original authors already fixed, and create maintenance burden with no benefit.
+- **Enterprise hardening intent:** For any common pattern with a well-maintained open-source solution, SHOULD use the library rather than a custom implementation. UI primitives (modals, popovers, comboboxes, date pickers, drag-and-drop) SHOULD use an accessible component library (Radix UI, Headless UI, shadcn/ui, or equivalent) rather than a hand-rolled implementation. Cryptographic operations, authentication flows, and data parsing MUST use established libraries. Custom implementations of common patterns require documented justification.
+- **Expected evidence:** Dependency audit showing use of maintained libraries for solved problems; documented justification for any custom implementation of a pattern with existing library solutions.
 
 
 ## 4.6 API: APIs, Contracts and Integrations
@@ -1344,6 +1356,8 @@ The ordering follows the lifecycle from intent and governance through architectu
 **Primary failure primitives:** `EXHAUSTION`, `UNAVAILABLE`, `UNMAINTAINABLE`, `ABUSE`
 
 **Lifecycle phases:** `design`, `build`, `verify`, `operate`
+
+**Tier note:** PER is T3 by default, meaning gaps are noted but do not block release. Projects with defined concurrency, throughput, or latency requirements SHOULD treat PER as T2. At scale, performance failures are availability failures.
 
 ### PER-01: Performance objectives and budgets
 
