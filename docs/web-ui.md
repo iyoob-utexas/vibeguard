@@ -119,6 +119,13 @@ Environment URLs belong in `.env` files and are accessed only through a validate
 | Partial/stale | Indicate data may be outdated; show last-updated time if relevant |
 | Success | The content |
 
+### Graceful degradation
+
+- Use React error boundaries to isolate component failures; a broken widget MUST NOT crash the full page.
+- When a non-essential feature fails (recommendations, social feed, analytics widget), show a contained fallback ("This section is temporarily unavailable") and keep the rest of the page functional.
+- Core functionality SHOULD work even when third-party scripts, analytics, or non-essential API calls fail.
+- Never silently show partial data as if it were complete; indicate when results are incomplete or stale.
+
 ### Pagination and large data
 
 - Lists that may exceed 50 items MUST paginate or use infinite scroll with an intersection observer.

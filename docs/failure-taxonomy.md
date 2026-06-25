@@ -552,6 +552,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Treat external systems as untrusted; validate responses, constrain destinations, set timeouts and budgets, isolate credentials, cache safely, and degrade deliberately.
 - **Expected evidence:** Egress policy; timeout and failure tests; response validation; dependency SLO.
 
+### API-11: Real-time and event-driven client contracts
+
+- **What can go wrong:** WebSocket or SSE connections drop silently; the client shows stale data without indicating loss of connection; reconnection floods the server; presence indicators lie; optimistic UI updates are never rolled back on failure; collaborative features produce conflicting state with no resolution strategy.
+- **Enterprise hardening intent:** Define reconnection behavior with exponential backoff and jitter; resync client state on reconnect rather than assuming continuity; show connection status to the user when the real-time channel is degraded; roll back optimistic updates on confirmed failure; define conflict resolution strategy for collaborative features; test behavior under disconnect, reconnect, and simultaneous edit scenarios.
+- **Expected evidence:** Reconnection and resync test; stale-state indicator review; optimistic-update rollback test; conflict-resolution design.
+
 
 ## 4.7 DAT: Data, Storage, Caching and Migrations
 
@@ -694,6 +700,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Define revocation latency; propagate policy changes; use short lifetimes and introspection for high-risk actions; reauthorize long workflows.
 - **Expected evidence:** Revocation SLO; propagation tests; stale-access monitoring.
 
+### IAM-11: Session continuity and re-authentication UX
+
+- **What can go wrong:** A session expires while the user is mid-task and in-progress work is silently lost; re-authentication redirects destroy form state, unsaved drafts, or multi-step wizard progress; "remember me" is not implemented, forcing re-login on every visit; cross-tab session state is inconsistent; a logout in one tab leaves other tabs in a phantom-authenticated state.
+- **Enterprise hardening intent:** Preserve in-progress work across session expiry using local draft storage or server-side state; prompt for re-authentication without navigation when possible; define and test cross-tab session consistency; define "remember me" lifetime and security boundaries explicitly; ensure logout propagates across all active tabs and windows.
+- **Expected evidence:** Session expiry UX test with in-progress form; cross-tab logout test; remember-me lifetime and scope documentation.
+
 
 ## 4.9 SEC: Application Security and Abuse Resistance
 
@@ -777,6 +789,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Maintain inventory, severity and reachability triage, patch SLAs, CISA KEV escalation, compensating controls, coordinated disclosure, and recurrence analysis.
 - **Expected evidence:** Vulnerability register; remediation SLA; VEX where used; SECURITY.md; recurrence review.
 
+### SEC-13: User-generated content safety
+
+- **What can go wrong:** User-submitted text, HTML, markdown, images, or files are rendered in other users' browsers without sanitization, producing stored XSS; uploaded files bypass content-type checks and are served with permissive MIME types; malware in uploaded documents reaches other users' devices; link unfurling fetches attacker-controlled URLs from the server (SSRF); AI-generated vibe-coded apps commonly render user content as raw innerHTML or dangerouslySetInnerHTML without review.
+- **Enterprise hardening intent:** Sanitize all user-generated content before rendering using an allowlist-based sanitizer (DOMPurify or equivalent); never use innerHTML or dangerouslySetInnerHTML with unsanitized user input; validate file content-type at read time, not only at upload time; serve user-uploaded files from an isolated origin or storage bucket, not the application domain; scan uploaded files for malware before delivery; treat link unfurling as a user-controlled SSRF vector and apply the same controls as outbound webhooks.
+- **Expected evidence:** XSS test with stored user input; file content-type validation test; upload domain isolation review; SSRF test for link unfurling.
+
 
 ## 4.10 PRV: Privacy and Data Protection
 
@@ -848,6 +866,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Define privacy incident classification, data and subject scoping, preservation, processor coordination, notification decision, and lessons-learned process.
 - **Expected evidence:** Privacy playbook; tabletop exercise; breach data map; notification decision log.
 
+### PRV-11: Legal and regulatory compliance controls
+
+- **What can go wrong:** A system collects personal data without a documented lawful basis or user consent; cookie tracking fires before consent is granted; data subject requests (right to deletion, portability, correction) have no implementation path; breach notification timelines are missed because the process doesn't exist; systems subject to HIPAA, PCI-DSS, GDPR, or CCPA are built without the specific controls those regimes require. AI-generated code commonly skips these entirely because they are process controls, not functional requirements.
+- **Enterprise hardening intent:** Document the lawful basis for each category of personal data collected; implement and test cookie consent that blocks non-essential tracking until consent is granted; build and test a data subject request workflow (deletion, export, correction) before going live with any personal data collection; document breach notification timelines and responsible contacts; identify applicable regulatory regimes at project classification time and verify specific controls are in place before production.
+- **Expected evidence:** Lawful basis register; cookie consent implementation test confirming pre-consent blocking; data subject request workflow test; regulatory control checklist for applicable regimes; breach notification runbook.
+
 
 ## 4.11 SAF: Safety, Human Impact and Responsible Automation
 
@@ -918,6 +942,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **What can go wrong:** A small code, model, data, configuration, or dependency change invalidates prior safety assumptions without renewed review.
 - **Enterprise hardening intent:** Identify safety-relevant items; require impact analysis, independent verification, staged rollout, and updated safety evidence for changes.
 - **Expected evidence:** Safety change assessment; independent sign-off; regression and rollout evidence.
+
+### SAF-11: Algorithmic fairness and bias
+
+- **What can go wrong:** A recommendation, ranking, scoring, credit, pricing, hiring, or content-moderation system produces systematically different outcomes for different demographic groups; training data encodes historical bias; proxy features (zip code, name, device type) correlate with protected characteristics; fairness is never measured because no one asked for it; AI-generated ranking or filtering code has no fairness test.
+- **Enterprise hardening intent:** For any system that makes or influences consequential decisions about people, define fairness criteria and measure disparate impact across relevant groups before launch; document the choice of fairness metric and known trade-offs; test for proxy discrimination through correlated features; monitor fairness metrics post-launch as model and data distributions shift; provide a contestability path for affected individuals.
+- **Expected evidence:** Fairness criteria definition; disparate impact analysis; proxy feature audit; post-launch fairness monitoring; contestability workflow.
 
 
 ## 4.12 SUP: Dependencies, Provenance and Software Supply Chain
@@ -992,9 +1022,9 @@ The ordering follows the lifecycle from intent and governance through architectu
 
 ### SUP-11: Third-party services and SaaS dependencies
 
-- **What can go wrong:** A service changes behavior, region, retention, API, pricing, ownership, or security posture; outage and exit paths are untested.
-- **Enterprise hardening intent:** Document data and credential scope, SLOs, limits, portability, fallback, deletion, incident notification, and exit procedures.
-- **Expected evidence:** Vendor record; contract controls; failure and exit test.
+- **What can go wrong:** A service changes behavior, region, retention, API, pricing, ownership, or security posture; outage and exit paths are untested. Multiple critical features depend on the same vendor, creating a concentration risk where one outage fails the entire product. The application has no defined behavior when a SaaS dependency is down: it crashes or shows raw errors rather than degrading gracefully.
+- **Enterprise hardening intent:** Document data and credential scope, SLOs, limits, portability, fallback, deletion, incident notification, and exit procedures. Inventory vendor concentration: identify which vendors are single points of failure for the product and design explicit fallback behavior. Test the application's behavior when each critical SaaS dependency is unavailable; define what users see and what functionality remains.
+- **Expected evidence:** Vendor record; concentration risk inventory; contract controls; failure simulation test for each critical dependency; documented and tested fallback behavior.
 
 ### SUP-12: Vendored, copied, generated, and snippet code
 
@@ -1312,9 +1342,9 @@ The ordering follows the lifecycle from intent and governance through architectu
 
 ### REL-09: Partial failure and graceful degradation
 
-- **What can go wrong:** A secondary feature, analytics path, optional dependency, or stale cache takes down the primary journey or returns incorrect success.
-- **Enterprise hardening intent:** Classify essential and optional functions; isolate failures; return explicit degraded behavior; prevent stale or partial data from masquerading as complete.
-- **Expected evidence:** Degradation matrix; dependency fault tests; user-message review.
+- **What can go wrong:** A secondary feature, analytics path, optional dependency, or stale cache takes down the primary journey or returns incorrect success. The UI shows a blank screen or raw error instead of communicating degraded state; partial results are displayed without indicating they are incomplete; a broken recommendation widget crashes the entire page; the app is all-or-nothing when it could be partially functional.
+- **Enterprise hardening intent:** Classify essential and optional functions; isolate failures using error boundaries, try/catch at feature boundaries, and fallback UI components; return explicit degraded behavior rather than silent failure; prevent stale or partial data from masquerading as complete; show users what is unavailable and what still works rather than failing the whole page. Progressive enhancement: core functionality SHOULD work even when non-essential features, analytics, or third-party widgets fail.
+- **Expected evidence:** Degradation matrix classifying essential vs. optional functions; dependency fault tests with UI verification; error boundary test confirming page survives component failure; user-message review confirming degraded state is communicated.
 
 ### REL-10: Redundancy, failover, and state recovery
 
@@ -1345,6 +1375,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **What can go wrong:** Autoscaling, health checks, retries, cache misses, reconnects, and recovery traffic reinforce failure and create thundering herds.
 - **Enterprise hardening intent:** Model feedback loops; add jitter, warmup, admission control, recovery prioritization, and rate limits; test recovery surge.
 - **Expected evidence:** Cascade analysis; recovery-load test; herd-control metrics.
+
+### REL-15: Transactional notification delivery
+
+- **What can go wrong:** A password reset email, email verification link, 2FA code, billing receipt, or critical alert is never delivered and the failure is silent; the application has no way to know whether an email was delivered, bounced, or marked as spam; a user cannot complete account creation because the verification email went to junk; SPF, DKIM, or DMARC is not configured and transactional email is rejected by major providers; delivery failures are not monitored; there is no retry or fallback channel for failed critical notifications.
+- **Enterprise hardening intent:** Monitor delivery status for critical transactional emails (password reset, verification, 2FA, billing) using provider webhooks or delivery receipts; alert on elevated bounce or spam rates; configure SPF, DKIM, and DMARC records before going live; define a retry strategy and, for critical paths (account access, payment confirmation), a fallback channel; surface delivery failures to users with actionable guidance rather than silent timeout. Do not use a marketing ESP for transactional email without verifying delivery priority and separation.
+- **Expected evidence:** Email delivery monitoring configuration; SPF/DKIM/DMARC verification; bounce and complaint rate alert; password reset and verification email delivery test; documented fallback for critical notification paths.
 
 
 ## 4.17 PER: Performance, Scalability, Capacity and Cost
@@ -1959,6 +1995,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Track critical knowledge and bus factor; rotate on-call and reviews; pair on high-risk changes; conduct drills and onboarding.
 - **Expected evidence:** Knowledge-risk register; training and drill records; backup-owner coverage.
 
+### KNO-13: Developer experience and local reproducibility
+
+- **What can go wrong:** A new developer cannot run the project locally without help from the person who built it; setup requires undocumented environment variables, manual database seeding steps, or OS-specific incantations; the local environment diverges silently from production because dependencies are not pinned or the runtime is not containerized; there is no fast feedback loop (tests take minutes, no hot reload); the only working dev environment belongs to one person. AI-generated projects fail this consistently because the AI builds for the happy path, not for the second developer.
+- **Enterprise hardening intent:** A new developer SHOULD be able to clone the repository and reach a running local environment within 10 minutes following only the README. Provide a reproducible dev environment (Docker Compose, devcontainer, or equivalent); include seed data for local development; define fast test and lint commands that run in under 30 seconds for the common case; document all required environment variables with safe local defaults.
+- **Expected evidence:** New-developer onboarding test (timed); dev environment reproducibility check on a clean machine; local seed data confirmed working; test runtime under 30 seconds for unit suite.
+
 
 ## 4.24 AIA: AI-Assisted Development and Coding-Agent Safety
 
@@ -2065,6 +2107,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **What can go wrong:** The agent declares success after editing without running relevant checks, or hides unverified behavior behind confident prose.
 - **Enterprise hardening intent:** Require a completion report listing changes, requirements met, tests run and not run, security and compatibility impact, residual risks, and explicit uncertainty.
 - **Expected evidence:** Completion report; command outputs; unresolved-risk list; reviewer decision.
+
+### AIA-17: LLM output quality and safety in applications
+
+- **What can go wrong:** An application that calls an LLM renders model output directly to users without validation; hallucinated facts, fabricated citations, or made-up product information are presented as authoritative; LLM output rendered as HTML is an XSS vector; model responses are used to drive application logic (database queries, API calls, decisions) without schema validation or safety checks; token budgets are not set per request, allowing runaway costs; prompts are not versioned, so model behavior changes invisibly when the provider updates; the application treats model confidence as a measure of correctness.
+- **Enterprise hardening intent:** Validate and sanitize LLM output before rendering or using it in logic: treat model output as untrusted user input, not authoritative data; never render model output as raw HTML; validate structured outputs (JSON, code, decisions) against a schema before acting on them; set token limits per request; version and test prompts as code; monitor output quality metrics (refusals, format failures, user corrections) in production; define what the application does when the model returns an unexpected or low-confidence response; do not use model confidence, explanation, or self-assessment as sole evidence of correctness.
+- **Expected evidence:** Output sanitization test; structured-output schema validation; token budget configuration; prompt version control; output quality monitoring; fallback behavior for unexpected model responses.
 
 
 ## 5. Coverage self-assessment
