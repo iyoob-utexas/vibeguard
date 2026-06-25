@@ -1,8 +1,6 @@
-# AGENTS.md — Vibeguard Coding Contract
+# AGENTS.md: Vibeguard Coding Contract
 
-This file is the canonical, tool-neutral operating contract for any AI system that reads, writes, reviews, tests, configures, deploys, or documents this repository.
-
-**Vibe is an ideation mode, not an assurance level.** Generated output is untrusted until it has been inspected, tested, and supported by evidence appropriate to the system's criticality.
+This file is the canonical, tool-neutral operating contract for any AI system that reads, writes, reviews, tests, configures, deploys, or documents this repository. Generated output is untrusted until it has been inspected, tested, and supported by evidence appropriate to the system's criticality.
 
 ## 1. Normative language
 
@@ -34,7 +32,7 @@ Before changing code, read enough of the following to understand the system and 
 2. `README.md` and the repository's build/test instructions.
 3. The target files and their callers, consumers, tests, schemas, and configuration.
 4. Relevant history or decision records when the change alters a public contract, data model, security boundary, or operational behavior.
-5. For project assessments: `docs/failure-taxonomy.md` — the full 24-domain risk catalog. Read this when asked to assess the project, or when starting work on an unfamiliar codebase. For routine coding tasks, consult the relevant domain sections rather than reading the full file.
+5. For project assessments: `docs/failure-taxonomy.md`: the full 24-domain risk catalog. Read this when asked to assess the project, or when starting work on an unfamiliar codebase. For routine coding tasks, consult the relevant domain sections rather than reading the full file.
 
 Do not begin by generating a replacement implementation from the task title alone.
 
@@ -331,7 +329,7 @@ These rules apply to any change that touches a browser-rendered interface. See [
 - MUST use a utility-first CSS framework (Tailwind CSS by default); MUST NOT write standalone vanilla CSS classes for layout or component styling.
 - MUST use modern React with functional components and hooks; MUST NOT introduce class-based React components, Redux, Angular, or jQuery in new code.
 - MUST organize UI into single-responsibility components; no component file SHOULD exceed 300 lines; logic used in more than one place MUST be extracted into a hook, utility, or service.
-- MUST NOT hardcode dynamic content — labels, messages, error strings, API base URLs, thresholds, and environment-specific values MUST be defined as constants, configuration, or i18n keys.
+- MUST NOT hardcode dynamic content: labels, messages, error strings, API base URLs, thresholds, and environment-specific values MUST be defined as constants, configuration, or i18n keys.
 - MUST handle all UI states explicitly: loading, empty, error, partial/stale, and success; a component that renders correctly only on an instant happy path is incomplete.
 - MUST implement pagination, virtual scrolling, or infinite scroll for any list that may exceed 50 items; MUST NOT load an unbounded dataset into client memory.
 - MUST lazy-load routes, images, and heavy components not required on first render.
@@ -363,7 +361,7 @@ For web UI, also cover:
 
 - Visual regression: screenshot comparison across browsers and viewports before and after each change.
 - Responsiveness: layout correctness at 320px, 768px, 1024px, and 1440px widths, and at 200% zoom.
-- Component states: unit tests for each defined UI state — loading, empty, error, partial/stale, and success.
+- Component states: unit tests for each defined UI state: loading, empty, error, partial/stale, and success.
 - End-to-end flows: critical user paths and destructive actions using Playwright or Cypress.
 - Integration: frontend-to-backend contract tests confirming API shape and error handling.
 - Accessibility: automated scanning with axe-core or equivalent, plus manual keyboard navigation, focus order, and screen-reader verification.
@@ -451,27 +449,27 @@ A change may compile and still be unfinished. The compiler checks syntax; the en
 
 When asked to assess a project, or at the start of a new engagement on an unfamiliar codebase, perform a Vibeguard assessment and output a completed scorecard.
 
-The scorecard is produced as output — either displayed in the conversation or written as `vibeguard-scorecard.md` in the project being assessed. Do not attempt to edit `checklist.md` in the Vibeguard repo; that file is a template, not your output target.
+The scorecard is produced as output: either displayed in the conversation or written as `vibeguard-scorecard.md` in the project being assessed. Do not attempt to edit `checklist.md` in the Vibeguard repo; that file is a template, not your output target.
 
 ### 11.1 How to assess
 
 1. Read `docs/failure-taxonomy.md` in full.
 2. Scan the project being assessed: code, configuration, tests, CI pipeline, infrastructure definitions, documentation, and dependencies.
 3. For each of the 24 taxonomy domains, determine applicability:
-   - **Yes** — the project has the characteristics this domain covers.
-   - **No** — the domain does not apply; mark ➖.
-   - **Partial** — some subcategories apply; note which.
+   - **Yes**: the project has the characteristics this domain covers.
+   - **No**: the domain does not apply; mark ➖.
+   - **Partial**: some subcategories apply; note which.
 4. For applicable domains, assess the current state against the failure patterns in that domain section.
 5. Assign a status to each domain:
-   - ✅ — evidence exists that the failure patterns are addressed.
-   - ⚠️ — partially addressed; notable gaps remain.
-   - ❌ — critical gap; failure patterns are unaddressed.
-   - ➖ — domain does not apply to this project.
+   - ✅: evidence exists that the failure patterns are addressed.
+   - ⚠️: partially addressed; notable gaps remain.
+   - ❌: critical gap; failure patterns are unaddressed.
+   - ➖: domain does not apply to this project.
 6. For ❌ or ⚠️ rows, state the critical gap in plain English.
 7. Calculate gate status:
-   - 🔴 **BLOCKED** — any T1 domain is ❌.
-   - 🟡 **REVIEW** — all T1 domains ✅ or ➖, but one or more T2 domains are ❌.
-   - 🟢 **READY** — all T1 and T2 domains are ✅ or ➖.
+   - 🔴 **BLOCKED**: any T1 domain is ❌.
+   - 🟡 **REVIEW**: all T1 domains ✅ or ➖, but one or more T2 domains are ❌.
+   - 🟢 **READY**: all T1 and T2 domains are ✅ or ➖.
    - T3 gaps are noted but do not affect gate status.
 8. Output the completed scorecard using the table format in `checklist.md` as the template.
 
@@ -491,9 +489,9 @@ Use these signals to determine which domains apply:
 | Handles money, health, or safety-relevant decisions | SAF, DOM, PRV |
 | Cloud or containerized infrastructure | INF, CFG, SEC |
 
-AIA and SUP always apply — every AI-generated codebase has dependency and agent-safety risk.
-SEC always applies — every project has a security surface.
-TST always applies — every project needs verification.
+AIA and SUP always apply: every AI-generated codebase has dependency and agent-safety risk.
+SEC always applies: every project has a security surface.
+TST always applies: every project needs verification.
 
 ### 11.3 What counts as evidence
 

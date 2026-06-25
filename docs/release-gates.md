@@ -49,7 +49,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ## 3. Lifecycle gates
 
-## G0 — Scope, ownership, and criticality
+## G0: Scope, ownership, and criticality
 
 **Decision:** Is the work sufficiently understood, owned, and classified to begin safely?
 
@@ -87,7 +87,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G1 — Requirements and design readiness
+## G1: Requirements and design readiness
 
 **Decision:** Does the proposed design address applicable correctness, abuse, failure, scale, privacy, safety, and operational concerns?
 
@@ -131,7 +131,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G2 — Implementation complete
+## G2: Implementation complete
 
 **Decision:** Is the implementation internally complete and ready for independent review?
 
@@ -174,7 +174,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G3 — Merge readiness
+## G3: Merge readiness
 
 **Decision:** Has the change been independently reviewed and verified sufficiently to enter the protected branch?
 
@@ -213,7 +213,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G4 — Release readiness
+## G4: Release readiness
 
 **Decision:** Is the artifact, configuration, operational posture, and transition plan ready for controlled production release?
 
@@ -258,7 +258,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G5 — Production rollout control
+## G5: Production rollout control
 
 **Decision:** Should exposure expand, pause, roll back, or remain at the current stage?
 
@@ -298,7 +298,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G6 — Operational acceptance
+## G6: Operational acceptance
 
 **Decision:** Has the released change demonstrated stable operation and transferred into normal ownership?
 
@@ -338,7 +338,7 @@ expires_at: 2026-06-26T18:00:00Z
 
 ---
 
-## G7 — Retirement and disposition
+## G7: Retirement and disposition
 
 **Decision:** Can the component, endpoint, data set, model, dependency, identity, feature flag, or system be safely retired?
 
@@ -408,7 +408,7 @@ Required minimums:
 
 ## 6. Separation of duties
 
-For high-consequence changes, no single actor—including an AI agent—should be able to:
+For high-consequence changes, no single actor (including an AI agent) should be able to:
 
 - Author the change.
 - Approve it.

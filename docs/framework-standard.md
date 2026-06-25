@@ -43,13 +43,13 @@ Words such as “secure,” “robust,” “appropriate,” “adequate,” “
 
 Assurance may be evaluated at several scopes:
 
-- **Organization** — governance, common platforms, policy, central services.
-- **System/product** — end-to-end user and business outcome.
-- **Service/application** — deployable runtime component.
-- **Repository** — source and build boundary.
-- **Component/library** — reusable implementation unit.
-- **Change/release** — a version-specific set of modifications.
-- **Runtime environment** — deployed infrastructure, configuration, and dependencies.
+- **Organization**: governance, common platforms, policy, central services.
+- **System/product**: end-to-end user and business outcome.
+- **Service/application**: deployable runtime component.
+- **Repository**: source and build boundary.
+- **Component/library**: reusable implementation unit.
+- **Change/release**: a version-specific set of modifications.
+- **Runtime environment**: deployed infrastructure, configuration, and dependencies.
 
 Every claim MUST name its scope. “The system passed” is ambiguous when only one repository's unit tests ran.
 
@@ -59,11 +59,11 @@ Criticality is based on consequence, not team size or development method.
 
 | Profile | Intended use | Typical consequence | Minimum expectation |
 |---|---|---|---|
-| `C0 — Experimental` | Disposable local exploration with synthetic/non-sensitive data and no external users | Negligible and readily reversible | Basic correctness, secret hygiene, dependency verification, clear non-production marking |
-| `C1 — Internal low impact` | Limited internal use; low sensitivity; manual workaround exists | Localized productivity or minor data impact | Repeatable build/test, ownership, access control, logs, backup where data persists |
-| `C2 — Production enterprise baseline` | Customer-facing or material internal production service | Meaningful customer, revenue, operational, or reputational impact | Full baseline across security, reliability, privacy, supply chain, observability, release, and recovery |
-| `C3 — Sensitive / regulated / high impact` | Regulated data, privileged administration, major revenue, critical operations, high tenant count | Severe financial, legal, privacy, or availability impact | Independent review, stronger isolation, threat/privacy modeling, staged rollout, tested recovery, formal evidence |
-| `C4 — Safety / systemic / catastrophic` | Human safety, essential infrastructure, irreversible high-impact decisions, systemic blast radius | Loss of life, widespread harm, catastrophic or existential organizational impact | Safety case, independent assurance, formal change authority, rigorous verification, fail-safe design, constrained automation |
+| `C0: Experimental` | Disposable local exploration with synthetic/non-sensitive data and no external users | Negligible and readily reversible | Basic correctness, secret hygiene, dependency verification, clear non-production marking |
+| `C1: Internal low impact` | Limited internal use; low sensitivity; manual workaround exists | Localized productivity or minor data impact | Repeatable build/test, ownership, access control, logs, backup where data persists |
+| `C2: Production enterprise baseline` | Customer-facing or material internal production service | Meaningful customer, revenue, operational, or reputational impact | Full baseline across security, reliability, privacy, supply chain, observability, release, and recovery |
+| `C3: Sensitive / regulated / high impact` | Regulated data, privileged administration, major revenue, critical operations, high tenant count | Severe financial, legal, privacy, or availability impact | Independent review, stronger isolation, threat/privacy modeling, staged rollout, tested recovery, formal evidence |
+| `C4: Safety / systemic / catastrophic` | Human safety, essential infrastructure, irreversible high-impact decisions, systemic blast radius | Loss of life, widespread harm, catastrophic or existential organizational impact | Safety case, independent assurance, formal change authority, rigorous verification, fail-safe design, constrained automation |
 
 ### 4.1 Classification factors
 
@@ -108,9 +108,9 @@ Severity expresses how failure affects release decisions.
 
 | Tier | Meaning | Default gate behavior |
 |---|---|---|
-| `T1 — Blocker` | Failure can plausibly cause unacceptable security, privacy, safety, data-loss, legal, financial, or systemic reliability harm | `BLOCKED`; release requires remediation or formally authorized exception where exceptions are legally and ethically permissible |
-| `T2 — Important` | Failure creates material risk or weakens defense-in-depth, maintainability, operability, or customer experience | `REVIEW`; remediation is expected, or accountable owner records rationale and plan |
-| `T3 — Improvement` | Failure is lower-impact, contextual, or primarily maturity/optimization oriented | Does not normally block; track trend, ownership, and target state |
+| `T1: Blocker` | Failure can plausibly cause unacceptable security, privacy, safety, data-loss, legal, financial, or systemic reliability harm | `BLOCKED`; release requires remediation or formally authorized exception where exceptions are legally and ethically permissible |
+| `T2: Important` | Failure creates material risk or weakens defense-in-depth, maintainability, operability, or customer experience | `REVIEW`; remediation is expected, or accountable owner records rationale and plan |
+| `T3: Improvement` | Failure is lower-impact, contextual, or primarily maturity/optimization oriented | Does not normally block; track trend, ownership, and target state |
 
 Tier is assigned to a control in context, not permanently inferred from a topic. A documentation defect may be `T1` when it makes disaster recovery unsafe.
 
@@ -197,11 +197,11 @@ The exact formula is organization-specific. Regardless of score:
 
 | Level | Name | Characteristics |
 |---|---|---|
-| `L0 — Experimental` | Ad hoc | Reliance on individual judgment; incomplete inventory; manual and inconsistent checks |
-| `L1 — Repeatable` | Documented | Named owners, repository instructions, repeatable build/test, basic control selection |
-| `L2 — Production` | Enforced | Automated gates, defined SLOs, threat/data review, staged release, operational readiness |
-| `L3 — Enterprise` | Measured | Central policy, control evidence, exception governance, cross-system risk, recovery exercises, metrics |
-| `L4 — Assured` | Independently validated | Independent assessment, adversarial testing, formal evidence for critical properties, continuous control validation |
+| `L0: Experimental` | Ad hoc | Reliance on individual judgment; incomplete inventory; manual and inconsistent checks |
+| `L1: Repeatable` | Documented | Named owners, repository instructions, repeatable build/test, basic control selection |
+| `L2: Production` | Enforced | Automated gates, defined SLOs, threat/data review, staged release, operational readiness |
+| `L3: Enterprise` | Measured | Central policy, control evidence, exception governance, cross-system risk, recovery exercises, metrics |
+| `L4: Assured` | Independently validated | Independent assessment, adversarial testing, formal evidence for critical properties, continuous control validation |
 
 Maturity is not a badge granted by tool count. A dozen scanners with no triage owner may still be `L0` wearing an expensive trench coat.
 
@@ -269,15 +269,15 @@ Evidence manifests SHOULD additionally record source commit, artifact digest, en
 
 Evidence SHOULD be:
 
-- **Relevant** — proves the stated criterion rather than an adjacent property.
-- **Scoped** — identifies system, component, version, environment, and configuration.
-- **Repeatable** — another authorized party can reproduce or independently inspect it.
-- **Tamper-evident** — linked to immutable artifacts or signed records where consequence requires it.
-- **Current** — still represents the deployed system and control.
-- **Complete** — includes failures and skipped work, not only successful output.
-- **Minimized** — does not unnecessarily expose secrets or personal data.
-- **Owned** — has an accountable producer and reviewer.
-- **Retained** — follows retention, audit, and legal requirements.
+- **Relevant**: proves the stated criterion rather than an adjacent property.
+- **Scoped**: identifies system, component, version, environment, and configuration.
+- **Repeatable**: another authorized party can reproduce or independently inspect it.
+- **Tamper-evident**: linked to immutable artifacts or signed records where consequence requires it.
+- **Current**: still represents the deployed system and control.
+- **Complete**: includes failures and skipped work, not only successful output.
+- **Minimized**: does not unnecessarily expose secrets or personal data.
+- **Owned**: has an accountable producer and reviewer.
+- **Retained**: follows retention, audit, and legal requirements.
 
 ### 14.1 Evidence strength
 
@@ -298,11 +298,11 @@ Higher criticality generally requires stronger and more independent evidence.
 
 Every control MUST name:
 
-- **Accountable owner** — accepts the consequence and funds remediation.
-- **Implementation owner** — builds or configures the control.
-- **Verification owner** — evaluates it.
-- **Operational owner** — monitors and responds at runtime, when applicable.
-- **Exception authority** — may approve a deviation.
+- **Accountable owner**: accepts the consequence and funds remediation.
+- **Implementation owner**: builds or configures the control.
+- **Verification owner**: evaluates it.
+- **Operational owner**: monitors and responds at runtime, when applicable.
+- **Exception authority**: may approve a deviation.
 
 For `C3`/`C4` controls, the verifier SHOULD be organizationally or procedurally independent of the implementer for high-consequence properties.
 
@@ -362,16 +362,16 @@ Rules:
 
 ## 18. Control lifecycle
 
-1. **Propose** — identify failure mode and affected scope.
-2. **Author** — write measurable requirements, verification, and evidence.
-3. **Review** — obtain domain, operational, and assurance review.
-4. **Pilot** — test signal quality and implementation cost.
-5. **Adopt** — assign version, tier, applicability, and owners.
-6. **Enforce** — integrate into review, CI/CD, runtime, or audit.
-7. **Measure** — track failures, escapes, false positives, and burden.
-8. **Revise** — clarify without changing meaning, or version breaking changes.
-9. **Deprecate** — name replacement and transition.
-10. **Retire** — retain historical traceability; never reuse the ID.
+1. **Propose**: identify failure mode and affected scope.
+2. **Author**: write measurable requirements, verification, and evidence.
+3. **Review**: obtain domain, operational, and assurance review.
+4. **Pilot**: test signal quality and implementation cost.
+5. **Adopt**: assign version, tier, applicability, and owners.
+6. **Enforce**: integrate into review, CI/CD, runtime, or audit.
+7. **Measure**: track failures, escapes, false positives, and burden.
+8. **Revise**: clarify without changing meaning, or version breaking changes.
+9. **Deprecate**: name replacement and transition.
+10. **Retire**: retain historical traceability; never reuse the ID.
 
 ## 19. Framework governance
 

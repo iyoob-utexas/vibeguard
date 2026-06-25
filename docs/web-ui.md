@@ -26,7 +26,7 @@ This document expands on the rules in [`AGENTS.md §5.18`](../AGENTS.md) with ra
 
 **Rule:** Utility-first CSS only. No hand-written vanilla CSS files or classes for layout and component styling.
 
-**Why:** Vanilla CSS in AI-generated projects grows unmanageably — duplicate rules, specificity conflicts, dead styles, and no design system enforcing consistency. Tailwind keeps styles co-located with markup, makes components portable, and tree-shakes unused styles at build time.
+**Why:** Vanilla CSS in AI-generated projects grows unmanageably: duplicate rules, specificity conflicts, dead styles, and no design system enforcing consistency. Tailwind keeps styles co-located with markup, makes components portable, and tree-shakes unused styles at build time.
 
 **Allowed:** CSS Modules or `styled-components` for the rare case where a Tailwind class composition becomes unreadable. Not for general use.
 
@@ -36,7 +36,7 @@ This document expands on the rules in [`AGENTS.md §5.18`](../AGENTS.md) with ra
 
 **Rule:** No component file exceeds 300 lines. Logic used in more than one place gets extracted.
 
-**Why:** AI coding tools, when not constrained, will dump entire features — data fetching, business logic, rendering, and local state — into one component file. These files become impossible to review, test, or modify without breaking something else.
+**Why:** AI coding tools, when not constrained, will dump entire features: data fetching, business logic, rendering, and local state: into one component file. These files become impossible to review, test, or modify without breaking something else.
 
 **Patterns to enforce:**
 
@@ -62,7 +62,7 @@ features/
 
 ## 3. No hardcoded dynamic content
 
-**Rule:** Labels, messages, error strings, API base URLs, thresholds, and environment-specific values live in constants or config files — never inline in JSX or TypeScript.
+**Rule:** Labels, messages, error strings, API base URLs, thresholds, and environment-specific values live in constants or config files: never inline in JSX or TypeScript.
 
 **Why:** Hardcoded strings make copy changes require code deployments. Hardcoded URLs mean you can't switch environments without a build. Hardcoded thresholds mean you can't tune behavior without touching rendering logic.
 
@@ -79,7 +79,7 @@ import { LABELS, API_BASE } from "@/config"
 fetch(`${API_BASE}/orders`)
 ```
 
-Environment URLs belong in `.env` files and are accessed only through a validated config module — never imported directly from `process.env` scattered across components.
+Environment URLs belong in `.env` files and are accessed only through a validated config module: never imported directly from `process.env` scattered across components.
 
 ---
 
@@ -113,7 +113,7 @@ Environment URLs belong in `.env` files and are accessed only through a validate
 
 **Rule:** `useEffect` dependency arrays must be exhaustive. Derived values must not be stored in state. Lint with `eslint-plugin-react-hooks`.
 
-**Why:** A missing dependency in `useEffect` produces stale closures — the effect runs with outdated values. An unnecessary dependency produces infinite loops — state updates trigger the effect, which updates state, which triggers the effect. Both cause subtle bugs that are expensive to diagnose in production.
+**Why:** A missing dependency in `useEffect` produces stale closures: the effect runs with outdated values. An unnecessary dependency produces infinite loops: state updates trigger the effect, which updates state, which triggers the effect. Both cause subtle bugs that are expensive to diagnose in production.
 
 **Common failure patterns:**
 
@@ -154,8 +154,8 @@ const onSubmit = useCallback(() => {
 
 **Preferred tools:**
 
-- **React Query (TanStack Query):** Full-featured — caching, deduplication, background refresh, pagination, mutation, optimistic updates.
-- **SWR:** Lightweight — good for read-heavy, straightforward caching patterns.
+- **React Query (TanStack Query):** Full-featured: caching, deduplication, background refresh, pagination, mutation, optimistic updates.
+- **SWR:** Lightweight: good for read-heavy, straightforward caching patterns.
 
 **What these tools provide automatically:**
 
@@ -245,4 +245,4 @@ See [`AGENTS.md §6`](../AGENTS.md) for the complete testing requirements. For w
 | Accessibility | axe-core via jest-axe or Playwright | WCAG violations; keyboard, focus, ARIA |
 | Performance | Lighthouse CI, bundlewatch | Core Web Vitals, bundle regression |
 
-**Testing each UI state is not optional.** A component test that only covers the success case leaves loading, empty, and error states unverified — these are the states users see most during incidents.
+**Testing each UI state is not optional.** A component test that only covers the success case leaves loading, empty, and error states unverified: these are the states users see most during incidents.
