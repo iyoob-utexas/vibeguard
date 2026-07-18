@@ -51,6 +51,8 @@ Before implementation, establish:
 
 When no criticality information is available, assume at least `C2` for code intended for shared or production use. Never down-classify merely to reduce work.
 
+When the request admits multiple valid interpretations, present them rather than silently choosing one. When a simpler approach than the one requested would meet the same acceptance criteria, state it instead of withholding it.
+
 ### 4.2 Inspect before editing
 
 MUST inspect:
@@ -63,7 +65,7 @@ MUST inspect:
 - Security and trust boundaries.
 - Migration and backward-compatibility implications.
 
-Prefer a small, coherent change that fits the current architecture. Do not perform unrelated cleanup unless it is necessary for correctness or safety and explicitly reported.
+Prefer a small, coherent change that fits the current architecture. Do not perform unrelated cleanup unless it is necessary for correctness or safety and explicitly reported. Report pre-existing dead code found during inspection; do not remove it unless asked.
 
 ### 4.3 Select applicable risk domains
 
@@ -114,6 +116,9 @@ Implementation MUST:
 - Use clear names, bounded resource use, and explicit ownership/lifetimes.
 - Fail safely and predictably.
 - Include the tests, telemetry, documentation, migration, and operational changes required to make the feature complete.
+- MUST NOT add features, abstractions, or configurability beyond what the acceptance criteria require.
+- MUST NOT add error handling for scenarios that cannot occur given the system's actual inputs and guarantees.
+- Prefer the simplest design that satisfies the acceptance criteria. Unnecessary complexity is a defect, not a safety margin.
 
 A code-only patch is incomplete when the behavior also requires configuration, schema, deployment, monitoring, runbook, or recovery changes.
 
