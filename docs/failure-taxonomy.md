@@ -109,7 +109,7 @@ Every domain should be challenged through each lens below. Many severe incidents
 | **OPS: Operations, Incident Response, Backup and Recovery** | `OPS-01–OPS-14` | 14 | Could the service be impossible to support, contain, restore, reconcile, communicate about, or retire when something goes wrong? |
 | **UXA: User Experience, Accessibility, Internationalization and Compatibility** | `UXA-01–UXA-12` | 12 | Could users fail, be excluded, misunderstand risk, lose work, or make unsafe choices because the interface and supported environments are weak? |
 | **KNO: Documentation, Knowledge and Supportability** | `KNO-01–KNO-12` | 12 | Could the system depend on vanished chat context or a few individuals because its architecture, operation, decisions, and contracts are not durable? |
-| **AIA: AI-Assisted Development and Coding-Agent Safety** | `AIA-01–AIA-16` | 16 | Could an AI coding tool confidently misread intent, obey malicious context, invent dependencies, weaken controls, or take excessive action without accountable verification? |
+| **AIA: AI-Assisted Development and Coding-Agent Safety** | `AIA-01–AIA-24` | 24 | Could an AI coding tool confidently misread intent, obey malicious context, invent dependencies, weaken controls, or take excessive action without accountable verification? |
 
 ## 4. Detailed hierarchy
 
@@ -175,9 +175,9 @@ The ordering follows the lifecycle from intent and governance through architectu
 
 ### GOV-09: Metrics, maturity, and continuous improvement
 
-- **What can go wrong:** Teams optimize test counts or ticket closure instead of escaped defects, recovery, user impact, and risk reduction; recurring failures are not converted into controls.
-- **Enterprise hardening intent:** Track outcome-oriented measures, control coverage, escaped defects, change failure, time to detect and recover, waiver age, and action-item closure; review trends and update the framework.
-- **Expected evidence:** Scorecard; maturity assessment; trend review; control-change history.
+- **What can go wrong:** Teams optimize test counts or ticket closure instead of escaped defects, recovery, user impact, and risk reduction; recurring failures, including AI-agent failures and human corrections of agent output, are not captured or converted into controls, so an instruction file or taxonomy drifts out of date with how the project actually fails.
+- **Enterprise hardening intent:** Track outcome-oriented measures, control coverage, escaped defects, change failure, time to detect and recover, waiver age, and action-item closure; capture material agent failures and corrections from the project's own usage, not only from external incidents; review trends and update the framework, instruction files, and agent configuration on a defined cadence.
+- **Expected evidence:** Scorecard; maturity assessment; trend review; control-change history; internal agent failure/correction log; instruction-file changelog tracing back to a captured failure.
 
 ### GOV-10: Third-party and lifecycle governance
 
@@ -1052,7 +1052,7 @@ The ordering follows the lifecycle from intent and governance through architectu
 ### BLD-02: CI identity and least privilege
 
 - **What can go wrong:** CI tokens can administer repositories, read all secrets, modify cloud resources, or persist beyond a job.
-- **Enterprise hardening intent:** Use job-scoped, short-lived identities and minimal permissions; separate read, test, publish, and deploy roles; deny unused capabilities.
+- **Enterprise hardening intent:** Use job-scoped, short-lived identities and minimal permissions; separate read, test, publish, and deploy roles; deny unused capabilities. Where an AI agent holds a CI identity, see AIA-22 for agent-specific privilege and self-merge constraints.
 - **Expected evidence:** Workflow permission manifest; IAM analysis; token lifetime evidence.
 
 ### BLD-03: Untrusted contributions and fork isolation
@@ -2081,19 +2081,19 @@ The ordering follows the lifecycle from intent and governance through architectu
 ### AIA-12: Provenance, attribution, and session record
 
 - **What can go wrong:** No one can determine which model, instructions, tools, sources, or approvals produced a consequential patch.
-- **Enterprise hardening intent:** Record tool and model identity where policy requires, loaded instructions, significant external sources, commands, test evidence, and human approvals.
+- **Enterprise hardening intent:** Record tool and model identity where policy requires, loaded instructions, significant external sources, commands, test evidence, and human approvals; this record is the input to the trajectory review required by AIA-20, not a substitute for it.
 - **Expected evidence:** Generation record; source attribution; signed completion report.
 
 ### AIA-13: Model and tool drift, reproducibility
 
-- **What can go wrong:** The same prompt produces materially different code after model, tool, retrieval, or policy updates; old guidance silently becomes obsolete.
-- **Enterprise hardening intent:** Version critical agent configurations and prompts; pin toolchain where practical; retain tests and expected behavior; revalidate on material upgrades.
+- **What can go wrong:** The same prompt produces materially different code after model, tool, retrieval, or policy updates; old guidance silently becomes obsolete; a tool or skill's input/output contract changes between versions and the agent keeps calling it under stale assumptions.
+- **Enterprise hardening intent:** Version critical agent configurations and prompts; pin toolchain where practical; retain tests and expected behavior; revalidate on material upgrades; version tool and skill contracts and detect breaking changes before an agent depends on them.
 - **Expected evidence:** Agent configuration version; regression suite; upgrade assessment.
 
 ### AIA-14: Loops, token, compute, and cost budgets
 
 - **What can go wrong:** Autonomous retries, searches, builds, or agent chains consume unbounded time, API spend, CI minutes, or external quotas.
-- **Enterprise hardening intent:** Set iteration, command, network, compute, and cost budgets; stop on repeated failure; summarize blockers rather than looping.
+- **Enterprise hardening intent:** Set iteration, command, network, compute, and cost budgets; detect repetitive or non-progressing action sequences and halt independent of budget exhaustion; stop on repeated failure; summarize blockers rather than looping.
 - **Expected evidence:** Budget configuration; loop detector; usage report.
 
 ### AIA-15: Multi-agent conflict and memory poisoning
@@ -2114,6 +2114,47 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **Enterprise hardening intent:** Validate and sanitize LLM output before rendering or using it in logic: treat model output as untrusted user input, not authoritative data; never render model output as raw HTML; validate structured outputs (JSON, code, decisions) against a schema before acting on them; set token limits per request; version and test prompts as code; monitor output quality metrics (refusals, format failures, user corrections) in production; define what the application does when the model returns an unexpected or low-confidence response; do not use model confidence, explanation, or self-assessment as sole evidence of correctness.
 - **Expected evidence:** Output sanitization test; structured-output schema validation; token budget configuration; prompt version control; output quality monitoring; fallback behavior for unexpected model responses.
 
+### AIA-18: Tool, skill, and hook surface hygiene
+
+- **What can go wrong:** Too many overlapping or loosely scoped tool and skill definitions increase selection error, prompt size, and misuse surface; the agent picks the wrong tool or chains tools unsafely; a hook (pre/post tool-use automation) executes with more trust or privilege than the action it wraps; unused tools, skills, and hooks remain reachable long after they stop being needed.
+- **Enterprise hardening intent:** Expose only the tools and skills a task needs; keep tool contracts single-purpose and named distinctly from overlapping alternatives; review hooks with the same rigor as the tool calls they intercept and scope hook privileges to the narrowest action required; audit and retire unused tools, skills, and hooks on an owned schedule.
+- **Expected evidence:** Tool/skill inventory with owner and last-used date; hook privilege review; overlap and duplication audit.
+
+### AIA-19: Context window management
+
+- **What can go wrong:** Long-running sessions accumulate stale, redundant, or contradictory context; the agent loses track of earlier constraints, re-derives already-answered questions, or acts on information that was true earlier in the session but has since changed; unmanaged context growth degrades response quality before it triggers an explicit budget failure.
+- **Enterprise hardening intent:** Prioritize current, task-relevant information over accumulated history; summarize or discard stale context at defined checkpoints rather than carrying it indefinitely; make what the agent currently treats as true inspectable, not just what it was told at the start of the session; treat compaction and summarization output as a new claim requiring the same scrutiny as any other agent output.
+- **Expected evidence:** Context or compaction strategy documentation; a session where stale context was correctly dropped or flagged; summary-accuracy check.
+
+### AIA-20: Trajectory review
+
+- **What can go wrong:** Review focuses only on the final diff; an agent that reached a correct-looking result through unsafe intermediate steps, such as reading files outside scope, invoking an unintended tool, or taking a destructive action that was later reverted, goes unnoticed because those steps leave no trace in the final output.
+- **Enterprise hardening intent:** Preserve and make reviewable the sequence of tool calls, commands, and intermediate decisions that produced a change, not only the final artifact (the session record required by AIA-12 is the input to this review, not a substitute for it); require review of the trajectory, not just the diff, for tasks above a defined criticality or blast-radius threshold; flag anomalous steps, such as scope expansion, unexpected tool use, or retried destructive actions, for human review even when the final result appears correct.
+- **Expected evidence:** Retained tool-call or session log; trajectory review record for qualifying changes; anomaly flags and their resolution.
+
+### AIA-21: Retrieval and knowledge-source integrity
+
+- **What can go wrong:** An agent that retrieves documentation, code context, or external knowledge to ground its response trusts stale, irrelevant, low-quality, or attacker-influenced sources as if they were verified fact; retrieved content silently overrides more authoritative instructions; ranking or chunking quality is never assessed, so the agent grounds a decision in the wrong passage.
+- **Enterprise hardening intent:** Validate and version retrieval sources; prefer authoritative, freshness-checked sources over unvalidated ones; filter and re-rank retrieved content for relevance before use; treat retrieved content as data subject to the same trust-boundary rules as other untrusted input (see AIA-04), never as instruction; sanitize retrieval inputs and outputs against injection.
+- **Expected evidence:** Source allowlist or freshness policy; retrieval quality or relevance evaluation; injection test against retrieved content.
+
+### AIA-22: Agentic CI/CD
+
+- **What can go wrong:** An agent running inside a pipeline opens pull requests, merges its own changes, or triggers deployments with the same privilege as a human release engineer, without the staged, human-approved gates that govern the rest of the pipeline; a compromised or misbehaving agent gains a direct path from generated code to production.
+- **Enterprise hardening intent:** Give agent-initiated pipeline actions no more privilege than the equivalent human action would receive; require the same branch protection, review, and release-gate rules for agent-authored changes as for human-authored ones; prohibit an agent from approving or merging its own change; log agent identity distinctly from human identity in pipeline audit trails. General CI identity and least-privilege controls are defined in BLD-02; this subcategory adds the agent-specific constraints on top of them.
+- **Expected evidence:** Pipeline permission configuration for agent identities; branch-protection rule covering agent-authored pull requests; audit log distinguishing agent from human actions.
+
+### AIA-23: Agent-to-agent and cross-vendor trust boundaries
+
+- **What can go wrong:** An agent accepts a task, output, or credential handoff from another agent, service, or vendor's agent as trustworthy without verifying its identity, scope, or authority; a cross-organization or cross-vendor agent handoff carries assumptions (permissions, data sensitivity, task boundaries) that do not hold on the receiving side.
+- **Enterprise hardening intent:** Authenticate and scope every agent-to-agent handoff explicitly; do not extend one agent's trust or permissions to another agent by default; define and enforce the boundary of what a received task, delegated credential, or upstream agent's output is authorized to do on the receiving side; treat another agent's output as untrusted input subject to the same validation as human-submitted or retrieved content (see AIA-04) until verified.
+- **Expected evidence:** Agent-to-agent authentication and scoping configuration; handoff boundary documentation; test of a scope-violating handoff being rejected.
+
+### AIA-24: Agent credential and secret lifecycle
+
+- **What can go wrong:** An agent obtains, caches, or persists its own API keys, OAuth tokens, or service credentials across sessions or tool calls; a long-lived agent credential is scoped more broadly than the task requires, is not rotated, or leaks into logs, prompts, transcripts, or a forked session.
+- **Enterprise hardening intent:** Scope agent credentials narrowly and time-bound them to the task or session; rotate or revoke agent credentials on session end, tool change, or task boundary; prevent agent credentials from being written to logs, prompts, transcripts, or persisted memory; treat an agent's own credential store with the same protection as any other secret-management system (see AIA-06 and CFG).
+- **Expected evidence:** Agent credential scope and expiry configuration; rotation/revocation record; scan of logs and transcripts for leaked agent credentials.
 
 ## 5. Coverage self-assessment
 
