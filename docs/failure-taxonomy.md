@@ -2098,8 +2098,8 @@ The ordering follows the lifecycle from intent and governance through architectu
 
 ### AIA-15: Multi-agent conflict and memory poisoning
 
-- **What can go wrong:** Agents overwrite each other, trust stale shared memory, amplify false assumptions, or create incompatible changes.
-- **Enterprise hardening intent:** Partition ownership; use reviewed shared state; validate handoffs; serialize conflicting edits; treat memory and summaries as untrusted until checked.
+- **What can go wrong:** Agents overwrite each other, trust stale shared memory, amplify false assumptions, or create incompatible changes; without a shared context layer, each agent in a chain re-derives or re-confirms facts the previous agent already established, multiplying token cost on top of the correctness risk.
+- **Enterprise hardening intent:** Partition ownership; use reviewed shared state; validate handoffs; serialize conflicting edits; treat memory and summaries as untrusted until checked; give a multi-agent chain a single shared context layer so downstream agents consume upstream results instead of re-deriving them (see AIA-25 for the cost dimension).
 - **Expected evidence:** Handoff record; conflict detection; shared-context provenance.
 
 ### AIA-16: Completion evidence, uncertainty, and stop conditions
@@ -2134,8 +2134,8 @@ The ordering follows the lifecycle from intent and governance through architectu
 
 ### AIA-21: Retrieval and knowledge-source integrity
 
-- **What can go wrong:** An agent that retrieves documentation, code context, or external knowledge to ground its response trusts stale, irrelevant, low-quality, or attacker-influenced sources as if they were verified fact; retrieved content silently overrides more authoritative instructions; ranking or chunking quality is never assessed, so the agent grounds a decision in the wrong passage.
-- **Enterprise hardening intent:** Validate and version retrieval sources; prefer authoritative, freshness-checked sources over unvalidated ones; filter and re-rank retrieved content for relevance before use; treat retrieved content as data subject to the same trust-boundary rules as other untrusted input (see AIA-04), never as instruction; sanitize retrieval inputs and outputs against injection.
+- **What can go wrong:** An agent that retrieves documentation, code context, or external knowledge to ground its response trusts stale, irrelevant, low-quality, or attacker-influenced sources as if they were verified fact; retrieved content silently overrides more authoritative instructions; ranking or chunking quality is never assessed, so the agent grounds a decision in the wrong passage; a narrow question pulls an entire document or knowledge base into context instead of the specific section that answers it, burning tokens on unread material and slowing the response.
+- **Enterprise hardening intent:** Validate and version retrieval sources; prefer authoritative, freshness-checked sources over unvalidated ones; filter and re-rank retrieved content for relevance before use; treat retrieved content as data subject to the same trust-boundary rules as other untrusted input (see AIA-04), never as instruction; sanitize retrieval inputs and outputs against injection; retrieve hierarchically, narrowing from section to passage, so only the slice relevant to the question enters context (see AIA-25 for the cost dimension).
 - **Expected evidence:** Source allowlist or freshness policy; retrieval quality or relevance evaluation; injection test against retrieved content.
 
 ### AIA-22: Agentic CI/CD
@@ -2155,6 +2155,12 @@ The ordering follows the lifecycle from intent and governance through architectu
 - **What can go wrong:** An agent obtains, caches, or persists its own API keys, OAuth tokens, or service credentials across sessions or tool calls; a long-lived agent credential is scoped more broadly than the task requires, is not rotated, or leaks into logs, prompts, transcripts, or a forked session.
 - **Enterprise hardening intent:** Scope agent credentials narrowly and time-bound them to the task or session; rotate or revoke agent credentials on session end, tool change, or task boundary; prevent agent credentials from being written to logs, prompts, transcripts, or persisted memory; treat an agent's own credential store with the same protection as any other secret-management system (see AIA-06 and CFG).
 - **Expected evidence:** Agent credential scope and expiry configuration; rotation/revocation record; scan of logs and transcripts for leaked agent credentials.
+
+### AIA-25: Token and cost efficiency patterns in LLM applications
+
+- **What can go wrong:** An application reloads the same static reference material, policy text, or instructions into every request instead of reusing cached context, multiplying cost with no quality gain; every task is routed through the same high-capacity model regardless of difficulty, so trivial extraction or classification work is billed at premium rates; identical or near-identical high-volume queries are each billed as a fresh call instead of served from a shared or memoized result; generated output runs long with no length or stop discipline, and most of it goes unread.
+- **Enterprise hardening intent:** Cache and reuse stable context (system instructions, reference documents, policy text) across requests rather than resending it verbatim; route tasks to a model tier matched to their difficulty, reserving the highest-capacity model for work that requires it; batch, memoize, or share results for identical or near-identical high-volume queries instead of re-executing the full call per requester; enforce output length caps and stop conditions on generation so responses match what will actually be used. These are cost-efficiency practices layered on top of, not a substitute for, the token and cost budgets required by AIA-14 and AIA-17 and the context discipline required by AIA-19.
+- **Expected evidence:** Context-caching configuration or reuse test; model-tier routing policy mapped to task type; batching or memoization layer for repeated queries; output length limit configuration.
 
 ## 5. Coverage self-assessment
 

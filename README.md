@@ -23,6 +23,8 @@ Do not claim a rule passes if you have not verified it. Do not mark a domain ✅
 
 That's it. The AI reads this repo, follows the rules while it codes, and can assess your project against all 24 risk domains on request.
 
+If your AI tool supports prompt or context caching, cache `AGENTS.md` and `docs/failure-taxonomy.md` rather than having the tool re-read them fresh on every task. They're large and don't change within a project, so this is the same fix Vibeguard itself recommends for repeated static context (see `AIA-25` in the taxonomy).
+
 ---
 
 ## Getting a scorecard
@@ -58,7 +60,7 @@ It will scan your project, determine which of the 24 risk domains apply, and pro
 |------|---------------|
 | [`AGENTS.md`](AGENTS.md) | The full operating contract your AI tool reads and follows |
 | [`checklist.md`](checklist.md) | The 24-domain scorecard template your AI uses to produce assessments |
-| [`docs/failure-taxonomy.md`](docs/failure-taxonomy.md) | 24 risk domains and 279 failure patterns: the rules the scorecard is based on |
+| [`docs/failure-taxonomy.md`](docs/failure-taxonomy.md) | 24 risk domains and 297 failure patterns: the rules the scorecard is based on |
 | [`docs/web-ui.md`](docs/web-ui.md) | Detailed web UI rules: responsiveness, modularization, edge states, stack choices |
 | [`docs/framework-standard.md`](docs/framework-standard.md) | Criticality levels C0–C4 and what each requires |
 | [`docs/release-gates.md`](docs/release-gates.md) | The decision logic behind READY / REVIEW / BLOCKED |

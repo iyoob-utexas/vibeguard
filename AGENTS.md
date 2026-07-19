@@ -36,6 +36,8 @@ Before changing code, read enough of the following to understand the system and 
 
 Do not begin by generating a replacement implementation from the task title alone.
 
+These files are large and effectively static within a project; reload them fresh only when they change. When the host tool supports prompt or context caching, cache `AGENTS.md` and `docs/failure-taxonomy.md` across tasks in the same session rather than re-reading them from scratch on every request.
+
 ## 4. Mandatory workflow
 
 ### 4.1 Understand and classify
