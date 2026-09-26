@@ -113,6 +113,7 @@ Implementation MUST:
 
 - Satisfy the stated acceptance criteria.
 - Preserve unrelated behavior.
+- Remove imports, variables, functions, and other code made unused by the current change; verify they have no remaining consumers. This does not authorize removing pre-existing dead code (see §4.2).
 - Follow repository conventions unless they are unsafe or explicitly being changed.
 - Keep policy and domain rules centralized rather than duplicated.
 - Use clear names, bounded resource use, and explicit ownership/lifetimes.
@@ -350,6 +351,8 @@ These rules apply to any change that touches a browser-rendered interface. See [
 ## 6. Testing requirements
 
 Tests MUST be designed to disprove the implementation, not decorate it.
+
+For bug fixes, MUST write or identify a regression test that reproduces the defect and run it before changing the implementation, confirming that it fails for the expected reason. After the fix, MUST rerun the same test and the relevant regression suite, confirm they pass, and retain the reproduction test to prevent recurrence.
 
 For applicable behavior, cover:
 
